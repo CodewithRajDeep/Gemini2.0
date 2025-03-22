@@ -32,6 +32,19 @@ const Main = () => {
                 <img src={assets.code} alt="" />
             </div>
         </div>
+        <div className="main-bottom">
+          <div className="search-box">
+            <input type="text" placeholder='Enter a prompt' />
+            <div>
+              <img src={assets.gallery_icon} alt="" />
+              <img src={assets.mic} alt="" />
+              <img src={assets.send} alt="" />
+            </div>
+          </div>
+          <p className="bottom-info">
+            Gemini at highload time may provide inaccurate info, double check its response.Gemini Privacy Policy.
+          </p>
+        </div>
       </div>
     </div>
   )
