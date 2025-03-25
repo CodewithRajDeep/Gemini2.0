@@ -1,10 +1,58 @@
+/* eslint-disable no-unused-vars */
 import React, { useContext } from 'react'
 import './Main.css'
 import { assets } from '../../assets/assest'
+import { useState, useEffect } from 'react'
 import { Context } from '../../context/Context'
+import Tesseract from 'tesseract.js';
 
 const Main = () => {
   const {onSent, recentPrompt, showResult, loading, resultData, setInput, input} = useContext(Context);
+  const [selectedImage, setSelectedImage] = useState(null);
+  const [processingImage, setProcessingImage] = useState(false);
+
+  const handleImageUpload = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      extractTextFromImage(file);
+    }
+  };
+
+  const extractTextFromImage = async (file) => {
+    setProcessingImage(true);
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = async () => {
+      Tesseract.recognize(reader.result, 'eng') 
+        .then(({ data: { text } }) => {
+          setInput(text); 
+          setProcessingImage(false);
+        })
+        .catch((err) => {
+          console.error("OCR Error:", err);
+          setProcessingImage(false);
+        });
+    };
+
+  };
+
+  useEffect(() => {
+    const handlePaste = (event) => {
+      const items = event.clipboardData.items;
+      for (const element of items) {
+        if (element.type.indexOf('image') !== -1) {
+          const file = element.getAsFile();
+          if (file) {
+            extractTextFromImage(file);
+          }
+        }
+      }
+    };
+
+    document.addEventListener('paste', handlePaste);
+    return () => document.removeEventListener('paste', handlePaste);
+  }, []);
+
   return (
     <div className='main'>
         <div className="nav">
@@ -62,7 +110,10 @@ const Main = () => {
               }
             }} />
             <div>
+            <label htmlFor="imageUpload">
               <img src={assets.gallery_icon} alt="" />
+              </label>
+              <input id="imageUpload" type="file" accept="image/*" onChange={handleImageUpload} style={{ display: "none" }} />
               <img src={assets.mic} alt="" />
               {input ? <img onClick={() => onSent()}src={assets.send} alt="" /> : null} 
             </div>
