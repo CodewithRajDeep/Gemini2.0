@@ -10,11 +10,13 @@
 .sidebar img{
     width: 20px;
 }
+
 .sidebar .menu{
     display: block;
     margin-left: 10px;
     cursor: pointer;
 }
+
 .sidebar .new-chat{
     margin-top: 50px;
     display: inline-flex;
@@ -30,11 +32,14 @@
 .sidebar .recent{
     display: flex;
     flex-direction: column;
+    animation: fadeIn 1.5s;
 }
+
 .sidebar .recent-title{
     margin-bottom: 20px;
     margin-top: 30px ;
 }
+
 .sidebar .recent-entry{
     display: flex;
     align-items: start;
@@ -58,4 +63,10 @@
 .sidebar .bottom-item{
     padding-right: 10px;
     cursor: pointer;
+}
+
+@media (max-width: 600px){
+    .sidebar{
+        display: none;
+    }
 }
