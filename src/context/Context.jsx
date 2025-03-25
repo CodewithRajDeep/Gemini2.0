@@ -3,8 +3,8 @@
 import { createContext, useState } from "react";
 import run from "../config/gemini";
 
-export const Context = createContext();
-
+ const Context = createContext();
+ export {Context};
 const ContextProvider = (props) => {
     
     const [input, setInput] = useState("");
@@ -27,9 +27,9 @@ const ContextProvider = (props) => {
         setShowResult(false)
     }
     const onSent = async (prompt) => {
-        setResultData("")
-        setLoading(true)
-        setShowResult(true)
+        setResultData("");
+        setLoading(true);
+        setShowResult(true);
         let response="";
         if(prompt !== undefined){
             response = await run(prompt);
@@ -41,21 +41,30 @@ const ContextProvider = (props) => {
             setRecentPrompt(input);
             response = await run(input);
         }
-        let responseArray = response.split('*');
-        let newResponse=""; 
-        for(let i=0; i<responseArray.length; i++){
-            if(i === 0 || i%2 !== 1){
-                newResponse += responseArray[i];
+        try {
+            let responseArray = JSON.parse(response);
+            let newResponse = "";
+
+            for(let key in responseArray){
+                if( Array.isArray(responseArray[key])) {
+                    newResponse += `<b>${key.replace(/_/g, " ")}:</b><br/>`;
+                    responseArray[key].forEach((item) => {
+                        newResponse += `• ${item}<br/>`;
+                    });
+                }
+                else{
+                    newResponse += `<b>${key.replace(/_/g, " ")}:</b><br/>${responseArray[key]}<br/><br/>`;}
+                }
+                for(let i=0; i< responseArray.length; i++){
+                    const nextWord = responseArray[i];
+                    delayPara(i, nextWord + "");
+                }
+                setResultData(newResponse);
             }
-            else{
-                newResponse += '<b>'+responseArray[i]+'</b>';
-            }
-        }
-        let newResponse2 = newResponse.split('*').join('</br>')
-        let newResponseArray = newResponse2.split(" ");
-        for(let i=0; i<newResponseArray.length; i++){
-            const nextWord = newResponseArray[i];
-            delayPara(i, nextWord + "");
+
+         catch (error) {
+            console.error("Error parsing response:", error);
+            setResultData("Error in processing response.");
         }
         setLoading(false)
         setInput("")
