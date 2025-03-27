@@ -7,10 +7,12 @@ import { Context } from '../../context/Context'
 import Tesseract from 'tesseract.js';
 
 const Main = () => {
-  const {onSent, recentPrompt, showResult, loading, resultData, setInput, input} = useContext(Context);
+  const {onSent, recentPrompt, showResult, loading, resultData, setInput, input,users, currentUser, addUser, switchUser, logout} = useContext(Context);
   const [selectedImage, setSelectedImage] = useState(null);
   const [processingImage, setProcessingImage] = useState(false);
   const [isListening, setIsListening] = useState(false);
+  const [newUser, setNewUser] = useState({ name: "", email: "" });
+  
   const handleImageUpload = (event) => {
     const file = event.target.files[0];
     if (file) {
