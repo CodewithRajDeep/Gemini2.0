@@ -10,7 +10,7 @@ const Main = () => {
   const {onSent, recentPrompt, showResult, loading, resultData, setInput, input} = useContext(Context);
   const [selectedImage, setSelectedImage] = useState(null);
   const [processingImage, setProcessingImage] = useState(false);
-
+  const [isListening, setIsListening] = useState(false);
   const handleImageUpload = (event) => {
     const file = event.target.files[0];
     if (file) {
@@ -23,9 +23,9 @@ const Main = () => {
     const reader = new FileReader();
     reader.readAsDataURL(file);
     reader.onload = async () => {
-      Tesseract.recognize(reader.result, 'eng') 
+      Tesseract.recognize(reader.result, 'eng')
         .then(({ data: { text } }) => {
-          setInput(text); 
+          setInput(text);
           setProcessingImage(false);
         })
         .catch((err) => {
@@ -52,7 +52,26 @@ const Main = () => {
     document.addEventListener('paste', handlePaste);
     return () => document.removeEventListener('paste', handlePaste);
   }, []);
+ 
+  const startListening = () => {
+    const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+    recognition.lang = "en-US";
+    recognition.start();
 
+    recognition.onstart = () => setIsListening(true);
+    
+    recognition.onresult = (event) => {
+      const transcript = event.results[0][0].transcript;
+      setInput(transcript);
+    };
+
+    recognition.onend = () => setIsListening(false);
+
+    recognition.onerror = (event) => {
+      console.error("Speech Recognition Error:", event.error);
+      setIsListening(false);
+    };
+  };
   return (
     <div className='main'>
         <div className="nav">
@@ -61,7 +80,7 @@ const Main = () => {
         </div>
       <div className="main-container">
 
-        {!showResult ? 
+        {!showResult ?
         <>
           <div className="greet">
             <p><span>Hello!</span></p>
@@ -85,7 +104,7 @@ const Main = () => {
                 <img src={assets.code} alt="" />
             </div>
         </div>
-        </> : 
+        </> :
         <div className='result'>
           <div className="result-title">
              <img src={assets.user1_icon} alt="" />
@@ -114,8 +133,9 @@ const Main = () => {
               <img src={assets.gallery_icon} alt="" />
               </label>
               <input id="imageUpload" type="file" accept="image/*" onChange={handleImageUpload} style={{ display: "none" }} />
-              <img src={assets.mic} alt="" />
-              {input ? <img onClick={() => onSent()}src={assets.send} alt="" /> : null} 
+              <img src={assets.mic} alt="Mic" onClick={startListening} style={{ cursor: "pointer", filter: isListening ? "grayscale(50%)" : "none" }}
+              />
+              {input ? <img onClick={() => onSent()}src={assets.send} alt="" /> : null}
             </div>
           </div>
           <p className="bottom-info">
