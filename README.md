@@ -125,7 +125,7 @@ Fork the repository: Create a fork of the project on your GitHub account. Create
 
 ## 📌Testing:
 
-Write unit tests for any new features or bug fixes. Ensure existing tests pass after your changes.
+Write unit tests for any new features or bug fixes. Ensure existing tests pass after your change.
 
 ## <a name="license"> 📜 License: </a> 
 
