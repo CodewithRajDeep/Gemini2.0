@@ -3,7 +3,7 @@
 ### 🧠 Gemini 2.0 - Advanced AI-Powered Text & Voice Processing
 
 ### ♠️ Purpose:
-Gemini 2.0 is an AI-driven text and voice-processing platform designed to enhance user interaction with intelligent document processing, OCR capabilities, and real-time voice-to-text transcriptions.
+Gemini 2.0 is an AI-driven text and voice-processing platform designed to enhance user interaction with intelligent document processing, OCR capabilities, and real-time voice-to-text transcription.
 
 ### 📖 Table of Contents:
 
